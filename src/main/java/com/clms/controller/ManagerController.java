@@ -1,7 +1,9 @@
 package com.clms.controller;
 
+import com.clms.dao.LeaveBalanceDAO;
 import com.clms.dao.LeaveRequestDAO;
 import com.clms.dao.ReportDAO;
+import com.clms.dao.UserDAO;
 import com.clms.model.LeaveRequest;
 import com.clms.model.LeaveType;
 import com.clms.service.LeaveService;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/manager/*")
@@ -21,6 +24,8 @@ public class ManagerController extends HttpServlet {
     private LeaveRequestDAO leaveRequestDAO = new LeaveRequestDAO();
     private LeaveService leaveService = new LeaveService();
     private ReportDAO reportDAO = new ReportDAO();
+    private LeaveBalanceDAO leaveBalanceDAO = new LeaveBalanceDAO();
+    private UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,8 +34,48 @@ public class ManagerController extends HttpServlet {
         int managerId = (int) session.getAttribute("user_id");
 
         if ("/dashboard".equals(pathInfo)) {
-            List<LeaveRequest> requests = leaveRequestDAO.getRequestsForManager(managerId);
-            request.setAttribute("requests", requests);
+            List<LeaveRequest> allRequests = leaveRequestDAO.getRequestsForManager(managerId);
+            
+            // Categorize requests
+            List<LeaveRequest> pendingRequests = new ArrayList<>();
+            List<LeaveRequest> approvedRequests = new ArrayList<>();
+            List<LeaveRequest> rejectedRequests = new ArrayList<>();
+            int approvedThisMonth = 0;
+            
+            // Current month logic
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            int currentMonth = cal.get(java.util.Calendar.MONTH);
+            int currentYear = cal.get(java.util.Calendar.YEAR);
+
+            for (LeaveRequest req : allRequests) {
+                if ("PENDING".equals(req.getStatus())) {
+                    pendingRequests.add(req);
+                } else if ("APPROVED".equals(req.getStatus())) {
+                    approvedRequests.add(req);
+                    
+                    // Check if approved this month based on applied_at or reviewed_at
+                    if (req.getReviewedAt() != null) {
+                        cal.setTime(req.getReviewedAt());
+                        if (cal.get(java.util.Calendar.MONTH) == currentMonth && cal.get(java.util.Calendar.YEAR) == currentYear) {
+                            approvedThisMonth++;
+                        }
+                    }
+                } else if ("REJECTED".equals(req.getStatus())) {
+                    rejectedRequests.add(req);
+                }
+            }
+
+            int totalEmployees = userDAO.getEmployeeCountForManager(managerId);
+            
+            request.setAttribute("totalEmployees", totalEmployees);
+            request.setAttribute("totalRequests", allRequests.size());
+            request.setAttribute("pendingCount", pendingRequests.size());
+            request.setAttribute("approvedThisMonth", approvedThisMonth);
+            
+            request.setAttribute("pendingRequests", pendingRequests);
+            request.setAttribute("approvedRequests", approvedRequests);
+            request.setAttribute("rejectedRequests", rejectedRequests);
+            
             request.getRequestDispatcher("/WEB-INF/views/manager/dashboard.jsp").forward(request, response);
         } else if ("/pending-approvals".equals(pathInfo)) {
             List<LeaveRequest> requests = leaveRequestDAO.getRequestsForManager(managerId);

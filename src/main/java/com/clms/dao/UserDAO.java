@@ -133,4 +133,19 @@ public class UserDAO {
         user.setCreatedAt(rs.getTimestamp("created_at"));
         return user;
     }
+
+    public int getEmployeeCountForManager(int managerId) {
+        String query = "SELECT COUNT(*) FROM users WHERE manager_id = ? AND is_active = TRUE";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, managerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

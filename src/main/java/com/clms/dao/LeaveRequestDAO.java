@@ -79,6 +79,23 @@ public class LeaveRequestDAO {
         return list;
     }
 
+    public List<LeaveRequest> getAllRequests() {
+        List<LeaveRequest> list = new ArrayList<>();
+        String query = "SELECT lr.*, u.full_name FROM leave_requests lr JOIN users u ON lr.user_id = u.user_id ORDER BY lr.applied_at DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                LeaveRequest lr = mapResultSetToLeaveRequest(rs);
+                lr.setEmployeeName(rs.getString("full_name"));
+                list.add(lr);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     private LeaveRequest mapResultSetToLeaveRequest(ResultSet rs) throws SQLException {
         LeaveRequest request = new LeaveRequest();
         request.setRequestId(rs.getInt("request_id"));

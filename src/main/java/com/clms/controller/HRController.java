@@ -31,6 +31,83 @@ public class HRController extends HttpServlet {
         String pathInfo = request.getPathInfo();
         
         if ("/dashboard".equals(pathInfo)) {
+            // Stats
+            int totalEmployees = userDAO.getAllUsers().size();
+            List<LeaveRequest> allRequests = leaveRequestDAO.getAllRequests();
+            int totalLeaveRequests = allRequests.size();
+            
+            List<LeaveRequest> hrPendingRequests = leaveRequestDAO.getRequestsForHRAdmin();
+            int pendingApprovals = hrPendingRequests.size();
+            
+            int approvedThisMonth = 0;
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            int currentMonth = cal.get(java.util.Calendar.MONTH);
+            int currentYear = cal.get(java.util.Calendar.YEAR);
+            
+            int casualApproved=0, casualPending=0, casualRejected=0;
+            int sickApproved=0, sickPending=0, sickRejected=0;
+            int earnedApproved=0, earnedPending=0, earnedRejected=0;
+
+            for(LeaveRequest req : allRequests) {
+                boolean isThisMonth = false;
+                if (req.getAppliedAt() != null) {
+                    cal.setTime(req.getAppliedAt());
+                    if (cal.get(java.util.Calendar.MONTH) == currentMonth && cal.get(java.util.Calendar.YEAR) == currentYear) {
+                        isThisMonth = true;
+                    }
+                }
+                
+                if (isThisMonth) {
+                    String status = req.getStatus();
+                    String type = req.getLeaveType().name();
+                    if ("CASUAL".equals(type)) {
+                        if ("APPROVED".equals(status)) casualApproved++;
+                        else if ("PENDING".equals(status)) casualPending++;
+                        else if ("REJECTED".equals(status)) casualRejected++;
+                    } else if ("SICK".equals(type)) {
+                        if ("APPROVED".equals(status)) sickApproved++;
+                        else if ("PENDING".equals(status)) sickPending++;
+                        else if ("REJECTED".equals(status)) sickRejected++;
+                    } else if ("EARNED".equals(type)) {
+                        if ("APPROVED".equals(status)) earnedApproved++;
+                        else if ("PENDING".equals(status)) earnedPending++;
+                        else if ("REJECTED".equals(status)) earnedRejected++;
+                    }
+                }
+
+                if ("APPROVED".equals(req.getStatus()) && req.getReviewedAt() != null) {
+                    cal.setTime(req.getReviewedAt());
+                    if (cal.get(java.util.Calendar.MONTH) == currentMonth && cal.get(java.util.Calendar.YEAR) == currentYear) {
+                        approvedThisMonth++;
+                    }
+                }
+            }
+            
+            // Pass chart data as arrays
+            request.setAttribute("chartApproved", new int[]{casualApproved, sickApproved, earnedApproved});
+            request.setAttribute("chartPending", new int[]{casualPending, sickPending, earnedPending});
+            request.setAttribute("chartRejected", new int[]{casualRejected, sickRejected, earnedRejected});
+
+            // Company Wide Leave Summary
+            java.util.Map<String, double[]> leaveSummary = leaveBalanceDAO.getCompanyWideLeaveSummary(currentYear);
+            if (!leaveSummary.containsKey("CASUAL")) leaveSummary.put("CASUAL", new double[]{0, 0});
+            if (!leaveSummary.containsKey("SICK")) leaveSummary.put("SICK", new double[]{0, 0});
+            if (!leaveSummary.containsKey("EARNED")) leaveSummary.put("EARNED", new double[]{0, 0});
+            request.setAttribute("leaveSummary", leaveSummary);
+
+            // Recent Requests (first 5 from all)
+            List<LeaveRequest> recentRequests = allRequests.size() > 5 ? allRequests.subList(0, 5) : allRequests;
+            request.setAttribute("recentRequests", recentRequests);
+
+            // Pending HR Approvals (first 5 from hrPending)
+            List<LeaveRequest> recentPendingHR = hrPendingRequests.size() > 5 ? hrPendingRequests.subList(0, 5) : hrPendingRequests;
+            request.setAttribute("recentPendingHR", recentPendingHR);
+
+            request.setAttribute("totalEmployees", totalEmployees);
+            request.setAttribute("totalLeaveRequests", totalLeaveRequests);
+            request.setAttribute("pendingApprovals", pendingApprovals);
+            request.setAttribute("approvedThisMonth", approvedThisMonth);
+
             request.getRequestDispatcher("/WEB-INF/views/hr/dashboard.jsp").forward(request, response);
         } else if ("/employees".equals(pathInfo)) {
             List<User> employees = userDAO.getAllUsers();

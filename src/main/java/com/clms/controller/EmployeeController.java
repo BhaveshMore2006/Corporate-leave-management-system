@@ -31,7 +31,38 @@ public class EmployeeController extends HttpServlet {
 
         if ("/dashboard".equals(pathInfo)) {
             List<LeaveBalance> balances = leaveBalanceDAO.getBalancesByUserId(userId, 2026);
+            List<LeaveRequest> requests = leaveRequestDAO.getRequestsByUserId(userId);
+            
+            double totalLeaves = 0.0;
+            double totalUsed = 0.0;
+            double totalRemaining = 0.0;
+            for (LeaveBalance b : balances) {
+                totalLeaves += b.getAllocatedDays();
+                totalUsed += b.getUsedDays();
+                totalRemaining += b.getRemainingDays();
+            }
+
+            long pendingRequests = requests.stream().filter(r -> "PENDING".equals(r.getStatus())).count();
+
+            // Find upcoming leave (earliest approved request in the future)
+            LeaveRequest upcomingLeave = null;
+            java.util.Date today = new java.util.Date();
+            for (LeaveRequest r : requests) {
+                if ("APPROVED".equals(r.getStatus()) && r.getStartDate() != null && !r.getStartDate().before(today)) {
+                    if (upcomingLeave == null || r.getStartDate().before(upcomingLeave.getStartDate())) {
+                        upcomingLeave = r;
+                    }
+                }
+            }
+
             request.setAttribute("balances", balances);
+            request.setAttribute("requests", requests);
+            request.setAttribute("totalLeaves", totalLeaves);
+            request.setAttribute("totalUsed", totalUsed);
+            request.setAttribute("totalRemaining", totalRemaining);
+            request.setAttribute("pendingRequestsCount", pendingRequests);
+            request.setAttribute("upcomingLeave", upcomingLeave);
+
             request.getRequestDispatcher("/WEB-INF/views/employee/dashboard.jsp").forward(request, response);
         } else if ("/apply".equals(pathInfo)) {
             request.getRequestDispatcher("/WEB-INF/views/employee/apply-leave.jsp").forward(request, response);

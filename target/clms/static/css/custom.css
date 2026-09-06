@@ -11,6 +11,10 @@ body {
 .sidebar-custom {
     background-color: #2e1d44 !important;
     border-right: none;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar-custom .nav-link {
@@ -202,3 +206,127 @@ body {
 .card-default h2 {
     color: #334155;
 }
+
+/* Manager Dashboard Customizations */
+.stat-card {
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    height: 100%;
+}
+.stat-purple { background-color: #f3f0ff; }
+.stat-blue { background-color: #f0f7ff; }
+.stat-red { background-color: #fff0f0; }
+.stat-green { background-color: #f0fff4; }
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-right: 20px;
+}
+.stat-purple .stat-icon { background-color: #e5d9f2; color: #5a3e8c; }
+.stat-blue .stat-icon { background-color: #dbeafe; color: #2563eb; }
+.stat-red .stat-icon { background-color: #fee2e2; color: #dc2626; }
+.stat-green .stat-icon { background-color: #dcfce7; color: #16a34a; }
+
+.stat-details p { margin-bottom: 2px; font-size: 0.9rem; font-weight: 600; color: #4a5568; }
+.stat-details h3 { margin-bottom: 0; font-weight: 800; color: #2d3748; }
+
+.custom-table th { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; border-bottom-width: 1px; padding: 15px; }
+.custom-table td { vertical-align: middle; padding: 15px; color: #4a5568; border-bottom: 1px solid #f1f5f9; }
+
+.avatar-circle {
+    width: 35px;
+    height: 35px;
+    background-color: #e5d9f2;
+    color: #5a3e8c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.btn-approve {
+    background-color: #7b61ff;
+    color: white;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+}
+.btn-approve:hover { background-color: #6a52e5; color: white; }
+
+.btn-reject-light {
+    background-color: #ffe4e6;
+    color: #e11d48;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+}
+.btn-reject-light:hover { background-color: #fecdd3; color: #e11d48; }
+
+.badge-approved { background-color: #dcfce7; color: #16a34a; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+.badge-rejected { background-color: #ffe4e6; color: #e11d48; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
+
+.btn-light-purple {
+    background-color: #e5d9f2;
+    color: #5a3e8c;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+}
+.btn-light-purple:hover {
+    background-color: #d8c6eb;
+    color: #442a70;
+}
+.badge-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.emp-stat-box {
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    flex: 1;
+    margin-right: 10px;
+}
+.emp-stat-box:last-child { margin-right: 0; }
+.emp-stat-box p { margin: 0; font-size: 0.8rem; font-weight: 600; }
+.emp-stat-box h4 { margin: 5px 0 0 0; font-weight: bold; }
+
+.emp-stat-total { background-color: #f3e8ff; color: #6b21a8; }
+.emp-stat-used { background-color: #fee2e2; color: #b91c1c; }
+.emp-stat-remaining { background-color: #dcfce7; color: #15803d; }
+.emp-stat-pending { background-color: #fef3c7; color: #b45309; }
+
+.emp-card { border-radius: 12px; border: none; padding: 20px; display: flex; align-items: center; }
+.emp-card-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; margin-right: 20px; flex-shrink: 0; }
+.emp-card-content h6 { font-weight: 700; color: #4a5568; margin-bottom: 5px; font-size: 0.85rem;}
+.emp-card-content h2 { font-weight: 800; margin-bottom: 5px; color: #2d3748; }
+.emp-card-content p { font-size: 0.8rem; color: #718096; margin: 0; font-weight: 600;}
+
+.emp-card-casual { background-color: #eff6ff; }
+.emp-card-casual .emp-card-icon { background-color: #3b82f6; }
+.emp-card-casual h2 { color: #2563eb; }
+
+.emp-card-sick { background-color: #fef2f2; }
+.emp-card-sick .emp-card-icon { background-color: #ef4444; }
+.emp-card-sick h2 { color: #dc2626; }
+
+.emp-card-earned { background-color: #f0fdf4; }
+.emp-card-earned .emp-card-icon { background-color: #22c55e; }
+.emp-card-earned h2 { color: #16a34a; }

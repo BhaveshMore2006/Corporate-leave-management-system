@@ -55,6 +55,24 @@ public class LeaveBalanceDAO {
         }
     }
 
+    public java.util.Map<String, double[]> getCompanyWideLeaveSummary(int fiscalYear) {
+        java.util.Map<String, double[]> summary = new java.util.HashMap<>();
+        String query = "SELECT leave_type, SUM(allocated_days) as total_allocated, SUM(used_days) as total_used FROM leave_balances WHERE fiscal_year = ? GROUP BY leave_type";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, fiscalYear);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String leaveType = rs.getString("leave_type");
+                double[] totals = {rs.getDouble("total_allocated"), rs.getDouble("total_used")};
+                summary.put(leaveType, totals);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return summary;
+    }
+
     private LeaveBalance mapResultSetToLeaveBalance(ResultSet rs) throws SQLException {
         LeaveBalance lb = new LeaveBalance();
         lb.setBalanceId(rs.getInt("balance_id"));

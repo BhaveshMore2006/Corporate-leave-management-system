@@ -4,7 +4,7 @@
 
 <div class="row g-0 min-vh-100">
     <!-- Left Column (Info) -->
-    <div class="col-lg-5 navbar-custom text-white d-flex flex-column justify-content-center p-5">
+    <div class="col-lg-5 text-white d-flex flex-column justify-content-center p-5" style="background-color: #2e1d44;">
         <div class="mb-5">
             <h3 class="fw-bold"><i class="bi bi-person-check-fill me-2"></i>Corporate Leave Management System</h3>
         </div>
