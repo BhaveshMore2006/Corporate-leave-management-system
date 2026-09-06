@@ -13,12 +13,34 @@
             <hr>
             <div class="row mt-4">
                 <c:forEach var="balance" items="${balances}">
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm border-0 bg-light">
-                            <div class="card-body text-center">
-                                <h5 class="card-title text-uppercase text-muted">${balance.leaveType} Leave</h5>
-                                <h2 class="display-4 text-primary">${balance.remainingDays}</h2>
-                                <p class="card-text text-muted mb-0">Total: ${balance.allocatedDays} | Used: ${balance.usedDays}</p>
+                    <div class="col-md-4 mb-4">
+                        <c:choose>
+                            <c:when test="${balance.leaveType == 'CASUAL'}">
+                                <c:set var="cardClass" value="card-theme card-casual" />
+                                <c:set var="iconClass" value="bi bi-umbrella-fill" />
+                            </c:when>
+                            <c:when test="${balance.leaveType == 'SICK'}">
+                                <c:set var="cardClass" value="card-theme card-sick" />
+                                <c:set var="iconClass" value="bi bi-plus-circle-fill" />
+                            </c:when>
+                            <c:when test="${balance.leaveType == 'EARNED'}">
+                                <c:set var="cardClass" value="card-theme card-earned" />
+                                <c:set var="iconClass" value="bi bi-flower1" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="cardClass" value="card-theme card-default" />
+                                <c:set var="iconClass" value="bi bi-calendar3" />
+                            </c:otherwise>
+                        </c:choose>
+
+                        <div class="${cardClass}">
+                            <div class="icon-wrapper">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div class="card-details">
+                                <h5 class="text-uppercase">${balance.leaveType} LEAVE</h5>
+                                <h2>${balance.remainingDays}</h2>
+                                <p>Total: ${balance.allocatedDays} | Used: ${balance.usedDays}</p>
                             </div>
                         </div>
                     </div>

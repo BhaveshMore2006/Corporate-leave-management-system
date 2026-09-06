@@ -32,15 +32,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="halfDay" name="halfDay" value="true">
-                                            <label class="form-check-label" for="halfDay">
-                                                Half Day (Sets duration to 0.5 days)
-                                            </label>
-                                        </div>
-                                </div>
+
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="startDate" class="form-label">Start Date</label>
@@ -54,7 +46,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <label for="totalDays" class="form-label">Total Days</label>
-                                        <input type="number" class="form-control bg-light" id="totalDays" name="totalDays" readonly required>
+                                        <input type="number" class="form-control bg-light" id="totalDays" name="totalDays" step="0.5" readonly required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">

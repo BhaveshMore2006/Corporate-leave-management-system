@@ -22,8 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if (startDateInput && endDateInput) {
-        startDateInput.addEventListener('change', calculateDays);
-        endDateInput.addEventListener('change', calculateDays);
-    }
+    if (startDateInput) startDateInput.addEventListener('change', calculateDays);
+    if (endDateInput) endDateInput.addEventListener('change', calculateDays);
+
+    // Highlight active sidebar link
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.sidebar-custom .nav-link');
+    navLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+        }
+    });
 });

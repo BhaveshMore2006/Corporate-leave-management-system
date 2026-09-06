@@ -8,6 +8,6 @@
     <title>CLMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/static/css/custom.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/static/css/custom.css?v=<%= System.currentTimeMillis() + 7 %>" rel="stylesheet">
 </head>
 <body>
